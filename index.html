@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Color Picker</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #808080; }
+  body { display: flex; align-items: center; justify-content: center; }
+  /* <object> (not <img>) so the SVG's script runs */
+  object { width: min(100vw, 100vh, 800px); aspect-ratio: 1; display: block; }
+</style>
+</head>
+<body>
+<object type="image/svg+xml" data="color.svg">
+  <a href="color.svg">Open the color picker</a>
+</object>
+</body>
+</html>

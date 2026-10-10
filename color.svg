@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/SVG/DTD/svg10.dtd">
+<svg viewBox="-50 -50 100 100" width="100%" height="100%" x="0" y="0" onload="init(evt)" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+<rect id="bg" x="-50" y="-50" height="100" width="100" fill="grey"/>
+<g id="anchorAnchor" transform="scale(1.7320508075688772935274463415059 -1.5)" color-rendering="optimizeSpeed" shape-rendering="optimizeSpeed">
+<g id="anchor" transform="scale(1.5)">
+<g id="sec" />
+</g>
+</g>
+<text id="rgb1" x="-45" y="-43" font-size="4" fill="black">none</text>
+<rect id="c1" x="-46" y="-41" width="25" height="8" rx=".5" fill="grey" stroke="black" />
+<text id="rgb2" x="10" y="-43" font-size="4" fill="black">none</text>
+<rect id="c2" x="9" y="-41" width="25" height="8" rx=".5" fill="grey" stroke="black" />
+<rect id="b1" x="-46" y="20" width="12" height="8" rx="2" fill="lightgrey" stroke="black" onclick="sizeCh(-1)">
+<set attributeName="stroke" to="red" begin="b1.mouseover" end="b1.mouseout" fill="remove"/>
+</rect>
+<rect id="b2" x="-30" y="20" width="12" height="8" rx="2" fill="darkgrey" stroke="black" onclick="sizeCh(1)">
+<set attributeName="stroke" to="red" begin="b2.mouseover" end="b2.mouseout" fill="remove"/>
+</rect>
+<text x="-28" y="26.5" font-size="7" fill="black" pointer-events="none">++</text>
+<text x="-42.5" y="26" font-size="7" fill="black" pointer-events="none">--</text>
+<script type="text/javascript"><![CDATA[
+// coded by Jens Jakob Kramhøft. jjkramhoeft@hotmail.com Version 1.0, june 2004
+// no copyrights - you are free to use all or part of this code!
+svgNS="http://www.w3.org/2000/svg";
+doc=null;
+c1=null;c2=null;
+anchor=null;anchorAnchor=null;sec=null;
+rgbText1=null;rgbText2=null;
+clickedHex=null;clickedHex2=null;
+size=10;
+hexD =" m0,-0.66666666 l 0.5,0.33333333 0,0.66666666 -0.5,0.33333333 -0.5,-0.33333333 0,-0.66666666 z";
+
+function init(e)
+{doc=e.target.ownerDocument;
+anchor=doc.getElementById("anchor");
+anchorAnchor=doc.getElementById("anchorAnchor");
+sec=doc.getElementById("sec");
+rgbText1=doc.getElementById("rgb1").firstChild;
+rgbText2=doc.getElementById("rgb2").firstChild;
+c1=doc.getElementById("c1");
+c2=doc.getElementById("c2");
+makeAllTriangels();
+}
+
+function makeAllTriangels()
+{makeTriagle(-size/2,-size/2,-1,1,0,1,size,1,0,0,0,1,0,0,0,1); // This is the only needed triangle. It contains all rgb triplets where the sum is 255
+makeTriagle(-size/2,-size/2,0,1,1,0,size,1,0,0,0,0,1,1,0,1); // Included to give easy access to magenta
+makeTriagle(-size/2,-size/2,-1,0,-1,1,size,1,0,0,1,1,0,0,1,0); // Included to give easy access to yellow
+makeTriagle(-size/2,size/2-1,-1,0,-1,1,size,0,0,1,0,1,0,0,1,1); // Included to give easy access to cyan
+}
+
+function makeTriagle(x0,y0,ix,iy,jx,jy,size,r1,g1,b1,r2,g2,b2,r3,g3,b3,secT)
+{rDi=(r2-r1)/(size-1); gDi=(g2-g1)/(size-1); bDi=(b2-b1)/(size-1);
+rDj=(r3-r1)/(size-1); gDj=(g3-g1)/(size-1); bDj=(b3-b1)/(size-1);
+for(i=0;i<size;i++)
+{for(j=0;j<size-i;j++)
+{drawHex(x0+ix*i+jx*j,y0+iy*i+jy*j,r1+i*rDi+j*rDj,g1+i*gDi+j*gDj,b1+i*bDi+j*bDj,secT);
+}
+}
+}
+
+function drawHex(x,y,r,g,b,secT)
+{x=x+y/2;
+hex = doc.createElementNS(svgNS,"path");
+hex.setAttribute("d","M"+x+","+y+hexD);
+hex.setAttribute("fill","rgb("+Math.round(r*255)+","+Math.round(g*255)+","+Math.round(b*255)+")");
+hex.setAttribute("stroke-width",".1");
+if(secT=="t")
+{hex.setAttribute("onmouseover","over2(evt)");
+hex.setAttribute("onclick","click2(evt)");
+sec.appendChild(hex);
+}
+else
+{hex.setAttribute("onmouseover","over1(evt)");
+hex.setAttribute("onclick","click1(evt)");
+anchor.appendChild(hex);
+}
+}
+
+function over1(e)
+{if(clickedHex==null)
+{rgb=e.target.getAttribute("fill")
+rgbText1.data=rgb;
+c1.setAttribute("fill",rgb);
+makeAllVers(rgb)
+}
+}
+
+function over2(e)
+{if(clickedHex2==null)
+{rgb=e.target.getAttribute("fill")
+rgbText2.data=rgb;
+c2.setAttribute("fill",rgb);
+}
+}
+
+function click1(e)
+{if(clickedHex==null)
+{clickedHex=e.target;
+anchor.appendChild(clickedHex);
+clickedHex.setAttribute("stroke","black");
+}
+else
+{clickedHex.setAttribute("stroke","none");
+clickedHex=null;
+}
+rgb=e.target.getAttribute("fill")
+rgbText1.data=rgb;
+c1.setAttribute("fill",rgb);
+makeAllVers(rgb)
+}
+
+function click2(e)
+{if(clickedHex2==null)
+{clickedHex2=e.target;
+sec.appendChild(clickedHex2);
+clickedHex2.setAttribute("stroke","black");
+}
+else
+{clickedHex2.setAttribute("stroke","none");
+clickedHex2=null;
+}
+rgb=e.target.getAttribute("fill")
+rgbText2.data=rgb;
+c2.setAttribute("fill",rgb);
+}
+
+function makeAllVers(rgbText)
+{rgbNum=rgbText.slice(4,rgbText.length-1);
+rgbNum=rgbNum.split(",");
+r=Number(rgbNum[0]); g=Number(rgbNum[1]); b=Number(rgbNum[2]);
+max=r;
+if(g>max)max=g;
+if(b>max)max=b;
+fr=(r*255/max)/255; fg=(g*255/max)/255; fb=(b*255/max)/255;
+anchor.removeChild(sec);
+newSec = doc.createElementNS(svgNS,"g");
+newSec.setAttribute("id","sec");
+anchor.appendChild(newSec);
+sec=doc.getElementById("sec");
+makeTriagle(size,-size/2,-1,1,0,1,size+1,fr,fg,fb,0,0,0,1,1,1,"t");
+}
+
+function sizeCh(d)
+{if(size+d<2)return;
+clickedHex=null;
+clickedHex2=null;
+size=size+d;
+anchorAnchor.removeChild(anchor);
+newAnchor = doc.createElementNS(svgNS,"g");
+newAnchor.setAttribute("id","anchor");
+s=15/size;
+newAnchor.setAttribute("transform","scale("+s+")");
+anchorAnchor.appendChild(newAnchor);
+anchor=doc.getElementById("anchor");
+newSec = doc.createElementNS(svgNS,"g");
+newSec.setAttribute("id","sec");
+anchor.appendChild(newSec);
+sec=doc.getElementById("sec");
+makeAllTriangels();
+}
+]]></script>
+</svg>
